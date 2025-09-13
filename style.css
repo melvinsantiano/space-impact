@@ -82,7 +82,3 @@ body {
     transform: scale(0.95);
   }
 }
-
-#mobileUI {
-  display: none;
-}
