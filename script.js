@@ -1,59 +1,43 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 // ====================== ASSETS ======================
-const bgImg = new Image();
-bgImg.src = "assets/images/bg.jpg";
+const bgImg = new Image(); bgImg.src = "assets/images/bg.jpg";
+const shipImg = new Image(); shipImg.src = "assets/images/ship.png";
+const bulletImg = new Image(); bulletImg.src = "assets/images/bullets.png";
+const enemyImg = new Image(); enemyImg.src = "assets/images/enemy.png";
 
-const shipImg = new Image();
-shipImg.src = "assets/images/ship.png";
-
-const bulletImg = new Image();
-bulletImg.src = "assets/images/bullets.png";
-
-const enemyImg = new Image();
-enemyImg.src = "assets/images/enemy.png";
-
-// sounds
-const bgm = new Audio("assets/sounds/bgmusic.mp3");
-bgm.loop = true;
+const bgm = new Audio("assets/sounds/bgmusic.mp3"); bgm.loop = true;
 const pewSfx = new Audio("assets/sounds/blaster-pew.wav");
 const boomSfx = new Audio("assets/sounds/boom.wav");
 const dieSfx = new Audio("assets/sounds/dies.wav");
 
 // ====================== GAME STATE ======================
 let player = {
-  x: 50,
-  y: canvas.height / 2 - 25,
-  width: 50,
-  height: 50,
-  speed: 4,
-  bullets: [],
-  lives: 3,
-  lastShot: 0
+  x: 50, y: canvas.height / 2 - 25, width: 50, height: 50, speed: 4,
+  bullets: [], lives: 3, lastShot: 0
 };
 
-let enemies = [];
-let explosions = [];
-let score = 0;
-let keys = {};
-let gameRunning = false;
-let gameOver = false;
-let paused = false;
-let enemySpawnTimer = 0;
-let backgroundX = 0;
+let enemies = [], explosions = [], score = 0, keys = {};
+let gameRunning = false, gameOver = false, paused = false;
+let enemySpawnTimer = 0, backgroundX = 0;
 
 // ====================== CONTROLS ======================
 document.addEventListener("keydown", (e) => {
   keys[e.code] = true;
-
-  if (e.code === "Enter") {
+  if (!isMobile && e.code === "Enter") {
     if (!gameRunning) startGame();
     if (gameOver) resetGame();
   }
   if (e.code === "KeyP" && gameRunning) paused = !paused;
 });
 document.addEventListener("keyup", (e) => keys[e.code] = false);
+
+canvas.addEventListener("touchstart", () => {
+  if (isMobile && !gameRunning && !gameOver) startGame();
+  else if (isMobile && gameOver) resetGame();
+});
 
 // ====================== GAME LOOP ======================
 function startGame() {
@@ -80,24 +64,19 @@ function resetGame() {
 function update() {
   if (!gameRunning || paused) return;
 
-  // background scroll
   backgroundX -= 2;
   if (backgroundX <= -canvas.width) backgroundX = 0;
 
-  // movement (Space Impact style: limit forward/backward)
   if (keys["ArrowUp"] && player.y > 0) player.y -= player.speed;
   if (keys["ArrowDown"] && player.y < canvas.height - player.height) player.y += player.speed;
 
-  // shooting with cooldown
   if (keys["Space"]) {
     let now = Date.now();
-    if (now - player.lastShot > 400) { // 400ms cooldown
+    if (now - player.lastShot > 400) {
       player.bullets.push({
         x: player.x + player.width,
         y: player.y + player.height / 2 - 5,
-        width: 20,
-        height: 10,
-        speed: 7
+        width: 20, height: 10, speed: 7
       });
       pewSfx.currentTime = 0;
       pewSfx.play();
@@ -105,42 +84,33 @@ function update() {
     }
   }
 
-  // update bullets
   for (let i = player.bullets.length - 1; i >= 0; i--) {
     let b = player.bullets[i];
     b.x += b.speed;
     if (b.x > canvas.width) player.bullets.splice(i, 1);
   }
 
-  // spawn enemies slower
   enemySpawnTimer++;
   if (enemySpawnTimer > 80) {
     enemies.push({
       x: canvas.width,
       y: Math.random() * (canvas.height - 40),
-      width: 40,
-      height: 40,
-      speed: 2.5
+      width: 40, height: 40, speed: 2.5
     });
     enemySpawnTimer = 0;
   }
 
-  // update enemies
   for (let i = enemies.length - 1; i >= 0; i--) {
     let e = enemies[i];
     e.x -= e.speed;
     if (e.x + e.width < 0) enemies.splice(i, 1);
   }
 
-  // collisions (bullet-enemy)
   for (let i = enemies.length - 1; i >= 0; i--) {
     for (let j = player.bullets.length - 1; j >= 0; j--) {
-      let e = enemies[i];
-      let b = player.bullets[j];
-      if (b.x < e.x + e.width &&
-          b.x + b.width > e.x &&
-          b.y < e.y + e.height &&
-          b.y + b.height > e.y) {
+      let e = enemies[i], b = player.bullets[j];
+      if (b.x < e.x + e.width && b.x + b.width > e.x &&
+          b.y < e.y + e.height && b.y + b.height > e.y) {
         enemies.splice(i, 1);
         player.bullets.splice(j, 1);
         explosions.push({ x: e.x, y: e.y, timer: 20 });
@@ -152,13 +122,10 @@ function update() {
     }
   }
 
-  // collisions (enemy-player)
   for (let i = enemies.length - 1; i >= 0; i--) {
     let e = enemies[i];
-    if (player.x < e.x + e.width &&
-        player.x + player.width > e.x &&
-        player.y < e.y + e.height &&
-        player.y + player.height > e.y) {
+    if (player.x < e.x + e.width && player.x + player.width > e.x &&
+        player.y < e.y + e.height && player.y + player.height > e.y) {
       enemies.splice(i, 1);
       player.lives--;
       dieSfx.currentTime = 0;
@@ -171,7 +138,6 @@ function update() {
     }
   }
 
-  // update explosions
   for (let i = explosions.length - 1; i >= 0; i--) {
     explosions[i].timer--;
     if (explosions[i].timer <= 0) explosions.splice(i, 1);
@@ -196,7 +162,7 @@ function draw() {
     ctx.drawImage(enemyImg, e.x, e.y, e.width, e.height);
   }
 
-  // explosions (red circles instead of sprite sheet for now)
+  // explosions
   for (let ex of explosions) {
     ctx.fillStyle = "orange";
     ctx.beginPath();
@@ -213,20 +179,24 @@ function draw() {
   if (!gameRunning && !gameOver) {
     ctx.fillStyle = "yellow";
     ctx.font = "28px Arial";
-    ctx.fillText("Press ENTER to Start", canvas.width / 2 - 150, canvas.height / 2);
+    const startMsg = isMobile ? "Tap to Start" : "Press ENTER to Start";
+    ctx.fillText(startMsg, canvas.width / 2 - 120, canvas.height / 2);
   }
+
   if (paused) {
     ctx.fillStyle = "yellow";
     ctx.font = "28px Arial";
     ctx.fillText("PAUSED", canvas.width / 2 - 60, canvas.height / 2);
   }
+
   if (gameOver) {
     ctx.fillStyle = "red";
     ctx.font = "40px Arial";
     ctx.fillText("GAME OVER", canvas.width / 2 - 120, canvas.height / 2 - 20);
     ctx.fillStyle = "yellow";
     ctx.font = "20px Arial";
-    ctx.fillText("Press ENTER to Restart", canvas.width / 2 - 120, canvas.height / 2 + 40);
+    const restartMsg = isMobile ? "Tap to Restart" : "Press ENTER to Restart";
+    ctx.fillText(restartMsg, canvas.width / 2 - 120, canvas.height / 2 + 40);
   }
 }
 
@@ -236,30 +206,3 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 gameLoop();
-
-function isTouchDevice() {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-}
-
-if (isTouchDevice()) {
-  document.getElementById("touchControls").style.display = "flex";
-
-  const btnUp = document.getElementById("btnUp");
-  const btnDown = document.getElementById("btnDown");
-  const btnShoot = document.getElementById("btnShoot");
-  const btnPause = document.getElementById("btnPause");
-
-  // Simulate key presses
-  btnUp.addEventListener("touchstart", () => keys["ArrowUp"] = true);
-  btnUp.addEventListener("touchend", () => keys["ArrowUp"] = false);
-
-  btnDown.addEventListener("touchstart", () => keys["ArrowDown"] = true);
-  btnDown.addEventListener("touchend", () => keys["ArrowDown"] = false);
-
-  btnShoot.addEventListener("touchstart", () => keys["Space"] = true);
-  btnShoot.addEventListener("touchend", () => keys["Space"] = false);
-
-  btnPause.addEventListener("touchstart", () => {
-    if (gameRunning) paused = !paused;
-  });
-}

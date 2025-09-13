@@ -6,32 +6,13 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow: hidden;
 }
 
 #gameCanvas {
   background: #000;
   display: block;
   border: 2px solid white;
-}
-
-#touchControls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none; /* Hidden by default, shown on mobile */
-  gap: 10px;
-  z-index: 10;
-}
-
-#touchControls button {
-  font-size: 24px;
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid white;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -41,3 +22,35 @@ body {
   }
 }
 
+#gamepad {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+}
+
+.dpad, .actions {
+  display: flex;
+  gap: 20px;
+}
+
+#gamepad button {
+  font-size: 24px;
+  padding: 20px 30px;
+  background: radial-gradient(circle at top left, #444, #222);
+  border: 3px solid #fff;
+  color: #fff;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+#gamepad button:active {
+  transform: scale(0.95);
+}
