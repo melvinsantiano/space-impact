@@ -236,3 +236,30 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 gameLoop();
+
+function isTouchDevice() {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
+
+if (isTouchDevice()) {
+  document.getElementById("touchControls").style.display = "flex";
+
+  const btnUp = document.getElementById("btnUp");
+  const btnDown = document.getElementById("btnDown");
+  const btnShoot = document.getElementById("btnShoot");
+  const btnPause = document.getElementById("btnPause");
+
+  // Simulate key presses
+  btnUp.addEventListener("touchstart", () => keys["ArrowUp"] = true);
+  btnUp.addEventListener("touchend", () => keys["ArrowUp"] = false);
+
+  btnDown.addEventListener("touchstart", () => keys["ArrowDown"] = true);
+  btnDown.addEventListener("touchend", () => keys["ArrowDown"] = false);
+
+  btnShoot.addEventListener("touchstart", () => keys["Space"] = true);
+  btnShoot.addEventListener("touchend", () => keys["Space"] = false);
+
+  btnPause.addEventListener("touchstart", () => {
+    if (gameRunning) paused = !paused;
+  });
+}
