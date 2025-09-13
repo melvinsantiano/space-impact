@@ -54,3 +54,56 @@ body {
 #gamepad button:active {
   transform: scale(0.95);
 }
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #gameCanvas {
+    width: 100vw;
+    height: auto;
+    flex: 1;
+  }
+
+  #mobileUI {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #111;
+    padding: 10px 0;
+  }
+
+  .controller {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  .dpad {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .actionBtn, .centerBtn, .dpad button {
+    font-size: 24px;
+    padding: 20px 30px;
+    background: radial-gradient(circle at top left, #444, #222);
+    border: 3px solid #fff;
+    color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  .actionBtn:active, .centerBtn:active, .dpad button:active {
+    transform: scale(0.95);
+  }
+}
