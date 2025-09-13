@@ -216,18 +216,23 @@ if (isMobile) {
   const btnShoot = document.getElementById("btnShoot");
   const btnPause = document.getElementById("btnPause");
 
-  btnUp.addEventListener("touchstart", () => keys["ArrowUp"] = true);
-  btnUp.addEventListener("touchend", () => keys["ArrowUp"] = false);
-
-  btnDown.addEventListener("touchstart", () => keys["ArrowDown"] = true);
-  btnDown.addEventListener("touchend", () => keys["ArrowDown"] = false);
-
-  btnShoot.addEventListener("touchstart", () => keys["Space"] = true);
-  btnShoot.addEventListener("touchend", () => keys["Space"] = false);
-
-  btnPause.addEventListener("touchstart", () => {
-    if (gameRunning) paused = !paused;
-  });
+  if (btnUp) {
+    btnUp.addEventListener("touchstart", () => keys["ArrowUp"] = true);
+    btnUp.addEventListener("touchend", () => keys["ArrowUp"] = false);
+  }
+  if (btnDown) {
+    btnDown.addEventListener("touchstart", () => keys["ArrowDown"] = true);
+    btnDown.addEventListener("touchend", () => keys["ArrowDown"] = false);
+  }
+  if (btnShoot) {
+    btnShoot.addEventListener("touchstart", () => keys["Space"] = true);
+    btnShoot.addEventListener("touchend", () => keys["Space"] = false);
+  }
+  if (btnPause) {
+    btnPause.addEventListener("touchstart", () => {
+      if (gameRunning) paused = !paused;
+    });
+  }
 }
 
 gameLoop();

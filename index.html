@@ -8,17 +8,12 @@
 <body>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-  <div id="mobileUI">
-  <div class="mobileControls">
-    <div class="leftControls">
-      <button id="btnUp">↑</button>
-      <button id="btnDown">↓</button>
-    </div>
-    <div class="rightControls">
-      <button id="btnShoot">🔫</button>
-      <button id="btnPause">⏸️</button>
-    </div>
-  </div>
+  <!-- Mobile Controller UI -->
+<div id="mobileUI" style="display:none; position:fixed; bottom:20px; left:0; width:100%; text-align:center; z-index:10;">
+  <button id="btnUp" style="width:60px; height:60px;">▲</button>
+  <button id="btnDown" style="width:60px; height:60px;">▼</button>
+  <button id="btnShoot" style="width:60px; height:60px;">🔫</button>
+  <button id="btnPause" style="width:60px; height:60px;">⏸️</button>
 </div>
 
   <script src="script.js"></script>
