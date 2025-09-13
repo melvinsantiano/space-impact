@@ -16,14 +16,6 @@ body {
   border: 2px solid white;
 }
 
-/* ========== DESKTOP STYLES ========== */
-@media (min-width: 769px) {
-  #mobileUI {
-    display: none !important; /* Hide controller on desktop */
-  }
-}
-
-/* ========== MOBILE STYLES ========== */
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -80,5 +72,11 @@ body {
 
   #mobileUI button:active {
     transform: scale(0.95);
+  }
+}
+
+@media (min-width: 769px) {
+  #mobileUI {
+    display: none !important;
   }
 }
