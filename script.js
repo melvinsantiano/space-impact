@@ -209,7 +209,7 @@ function gameLoop() {
 // ====================== TOUCH CONTROLS FOR MOBILE ======================
 if (isMobile) {
   const mobileUI = document.getElementById("mobileUI");
-  if (mobileUI) mobileUI.style.display = "flex";
+  if (mobileUI) mobileUI.style.display = "block";
 
   const btnUp = document.getElementById("btnUp");
   const btnDown = document.getElementById("btnDown");
